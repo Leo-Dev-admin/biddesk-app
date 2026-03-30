@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'BidDesk — Procurement OS for Homebuilders',
   description: 'Manage bid packages, compare vendors, and streamline procurement across all your communities.',
