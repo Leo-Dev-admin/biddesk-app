@@ -109,45 +109,57 @@ create table qa_threads (
   bid_package_id uuid not null references bid_packages(id) on delete cascade,
   question text not null,
   author_id uuid references auth.users(id),
-  is_public boolean bid_package_id uupeld: string, value: string) {
-    setForm(prev => ({ ...prev, [field]: value }))
-  }
+  is_public boolean not null default true,
+  created_at timestamptz default now()
+);
 
-  function toggleTrade(t: stringPR       priimary key drate_v4(),
-  bid_       _id uuid not null references bid_packages(id) on delete cy key question text not null,
-  auid_package references auth.users(id),    yublic boolean bid_package_id uupeld: string, value: string) {
- e }))
-  }
+-- Q&A replies on threads
+create table qa_replies (
+  id uuid primary key default uuid_generate_v4(),
+  thread_id uuid not null references qa_threads(id) on delete cascade,
+  reply text not null,
+  author_id uuid references auth.users(id),
+  created_at timestamptz default now()
+);
 
-  function toggleTrade(t: stringPS check        _ireun    t' chective te_v4(),
-  org_' che_k        _ieferences organizations(id),
-  name text not null,
-  contact_name text,
-  email text not null,
-  not null default 'draftate date,
-  status textnowcripis_publicl defaultublicl defaultndosting' check (status e }))
-  }
+-- Scope templates (reusable scope descriptions)
+create table scope_templates (
+  id uuid primary key default uuid_generate_v4(),
+  org_id uuid references organizations(id),
+  trade text not null,
+  title text not null,
+  description text,
+  unit text,
+  unit_cost numeric(10,2),
+  created_at timestamptz default now()
+);
 
-  function toggleTrade(t: stringPReveLult  S profil
-ale.chadelete cascadeen
--- develult  o profil;
-ale.chadelet  name text noen
--- develult  o profil;
-ale.chadeletorg_id uuid en
--- develult  o profil;
-ale.chadeletorg_id umunity_iden
--- develult  o profil;
-ale.chadelet community_iden
--- develult  o profil;
-ale.chadeletdefault en
--- develult  o profil;
-ale.chadelet cot en
--- develult  o profil;
-ale.chadeletid_package_en
--- develult  o profil;
-ale.chadeletid_       _en
--- develult  o profil;
-ale.chadelet' che_k        _en
--- develult  o profil;
-ringPP cascad:('vene t =>ckag p-6, up('draow
-  for eapoFory "e cascad_ame), `px-3te cascade defame),  ey defabase.;n  for eapoFory "e cascad_up('dr`px-3te cascade defup('draey defavalue:id rouren: stringPFautohe MVP,rofile } = awa('vene t =>acn   _everyth defite eeirt  nringP(tqa_rete eeseapoForrimarsertetam)n  for eapoFory "  nd_ame), `px-3t  name text no defame),  ey defavalueon_a rour'ofile } = await n  for eapoFory "org_id uuid_betwex-3torg_id uuid  defaot ey defavalueon_a rour'ofile } = await n  for eapoFory "org_id umunity_i_betwex-3torg_id umunity_id defaot ey defavalueon_a rour'ofile } = await n  for eapoFory " community_i_betwex-3t community_id defaot ey defavalueon_a rour'ofile } = await n  for eapoFory "default_betwex-3tmary key defaot ey defavalueon_a rour'ofile } = await n  for eapoFory " coi_betwex-3t coey defaot ey defavalueon_a rour'ofile } = await n  for eapoFory "id_package_betwex-3tid_package_ defaot ey defavalueon_a rour'ofile } = await n  for eapoFory "id_       _betwex-3tid_       _ defaot ey defavalueon_a rour'ofile } = await n  for eapoFory "' che_k        _betwex-3t' che_k        _ defaot ey defavalueon_a rour'ofile } = await n 
+-- =============================================================
+-- Row-Level Security (RLS) Policies
+-- =============================================================
+
+-- Enable RLS on all tables
+alter table organizations enable row level security;
+alter table profiles enable row level security;
+alter table communities enable row level security;
+alter table community_trades enable row level security;
+alter table bid_packages enable row level security;
+alter table vendors enable row level security;
+alter table bids enable row level security;
+alter table qa_threads enable row level security;
+alter table qa_replies enable row level security;
+alter table scope_templates enable row level security;
+
+-- Allow authenticated users full access (Phase 1 - single-org MVP)
+-- In Phase 2, restrict by org_id
+create policy "Authenticated users can read all" on organizations for select to authenticated using (true);
+create policy "Authenticated users can read all" on profiles for select to authenticated using (true);
+
+create policy "Authenticated users full access" on communities for all to authenticated using (true) with check (true);
+create policy "Authenticated users full access" on community_trades for all to authenticated using (true) with check (true);
+create policy "Authenticated users full access" on bid_packages for all to authenticated using (true) with check (true);
+create policy "Authenticated users full access" on vendors for all to authenticated using (true) with check (true);
+create policy "Authenticated users full access" on bids for all to authenticated using (true) with check (true);
+create policy "Authenticated users full access" on qa_threads for all to authenticated using (true) with check (true);
+create policy "Authenticated users full access" on qa_replies for all to authenticated using (true) with check (true);
+create policy "Authenticated users full access" on scope_templates for all to authenticated using (true) with check (true);
